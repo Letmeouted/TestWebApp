@@ -1,0 +1,20 @@
+{
+  "name": "testwebapp",
+  "version": "0.0.1",
+  "description": "AneuFiler",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "nodemon index.js"
+  },
+  "keywords": [
+    "upload",
+    "node",
+    "html"
+  ],
+  "author": "Letmeouted",
+  "license": "ISC",
+  "dependencies": {
+    "compressing": "^1.5.1"
+  }
+}
