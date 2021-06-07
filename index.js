@@ -12,8 +12,6 @@ http.createServer(function (req, res) {
   const _lower_url = url.toLowerCase();
   const method = req.method.toLowerCase();
   console.log(url);
-  const filename1 = url.substring(21);
-  const filename2 = url.substring(24);
 
   if (["/", "", "/index"].includes(_lower_url)) {
     res.writeHead(200, { "Content-Type": "text/html" });
@@ -29,6 +27,7 @@ http.createServer(function (req, res) {
       }
       const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
       const fpath = `${cwd}/files/${fileName}`;
+      console.log(fpath)
       const { exec } = require('child_process');
       exec('perl ' + "analysis.pl " + "-i " + "files/" + fileName + " -e GBK", (error, stdout, stderr) => {
         if (error) {
@@ -64,6 +63,8 @@ http.createServer(function (req, res) {
       }
       const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
       const fpath = `${cwd}/files/${fileName}`;
+      console.log(fpath)
+      const fs = require('fs')
       const { exec } = require('child_process');
       exec('perl ' + "analysis.pl " + "-i " + "files/" + fileName + "-e GBK", (error, stdout, stderr) => {
         if (error) {
@@ -73,6 +74,7 @@ http.createServer(function (req, res) {
         console.log(`stdout: ${stdout}`);
         console.error(`stderr: ${stderr}`);
       });
+
       req.on("data", (chunk) => {
         binary.push(...chunk);
         console.log(chunk)
@@ -89,7 +91,6 @@ http.createServer(function (req, res) {
       res.writeHead(400);
       res.end(error.toString());
     }
-
     return;
   }
   if (_lower_url.startsWith("/api/download")) {
@@ -100,28 +101,76 @@ http.createServer(function (req, res) {
       }
       const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
       const fpath = `${cwd}/files/${decodeURI(fileName)}`;
+      console.log(fpath)
+      const fs = require('fs')
+      var stat = fs.statSync(fpath)
       console.log("fpath = ", fpath);
-
-      if (!fs.existsSync(fpath)) {
-        res.writeHead(404);
-        res.end("requested file not found");
+      console.log(stat.isFile())
+      if (stat.isFile() == true) {
+        console.log('是否是文件：' + stat.isFile())
+        if (!fs.existsSync(fpath)) {
+          res.writeHead(404);
+          res.end("requested file not found");
+        }
+        res.setHeader(
+          "Content-disposition",
+          "attachment; filename=" + fileName
+        );
+        res.writeHead(200, { "Content-Type": "application/octet-stream" });
+        const _readStream = fs.createReadStream(fpath);
+        _readStream.pipe(res);
+      } else {
+        console.log('是否是文件夹：' + stat.isDirectory())
+        const { exec } = require('child_process');
+        exec('zip ' + "-r " + fileName + ".zip " + fpath, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`执行的错误: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+        });
+        res.setHeader(
+          "Content-disposition",
+          "attachment; filename=" + fileName + '.zip'
+        );
+        res.writeHead(200, { "Content-Type": "application/octet-stream" });
+        const _readStream = fs.createReadStream('./' + fileName + '.zip');
+        _readStream.pipe(res);
       }
-      res.setHeader(
-        "Content-disposition",
-        "attachment; filename=" + fileName
-      );
-      res.writeHead(200,{"Content-Type":"application/zip"});
-      const _readStream = fs.createReadStream(fpath);
-      _readStream.pipe(res);
     } catch (err) {
       res.writeHead(400);
       res.end(err.toString());
     }
     return;
   }
+
   if (_lower_url.startsWith("/download")) {
     res.writeHead(200, { "Content-Type": "text/html" });
     const data = fs.readFileSync("./downloads.html");
+    const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
+    const fpath = `${cwd}/files/${decodeURI(fileName)}`;
+    const fs = require('fs')
+    var stat = fs.statSync(fpath)
+    if (stat.isDirectory()== true) {
+      console.log('是否是文件夹：' + stat.isDirectory())
+      const { exec } = require('child_process');
+      exec('zip ' + "-r " + fileName + ".zip " + fpath, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`执行的错误: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+      });
+      res.setHeader(
+        "Content-disposition",
+        "attachment; filename=" + fileName + '.zip'
+      );
+      res.writeHead(200, { "Content-Type": "application/octet-stream" });
+      const _readStream = fs.createReadStream('./' + fileName + '.zip');
+      _readStream.pipe(res);
+    }
     console.log(data)
     return res.end(data);
   }

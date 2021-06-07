@@ -15,6 +15,7 @@
   "author": "Letmeouted",
   "license": "ISC",
   "dependencies": {
+    "archiver": "^5.3.0",
     "compressing": "^1.5.1"
   }
 }
