@@ -92,6 +92,7 @@ http.createServer(function (req, res) {
     }
     return;
   }
+  // execute commond can not get file
   if (_lower_url.startsWith("/api/download")) {
     try {
       if (!url.includes("?") || !url.includes("filename=")) {
@@ -103,8 +104,6 @@ http.createServer(function (req, res) {
       console.log(fpath)
       const fs = require('fs')
       var stat = fs.statSync(fpath)
-      console.log("fpath = ", fpath);
-      console.log(stat.isFile())
       if (stat.isFile() == true) {
         console.log('是否是文件：' + stat.isFile())
         if (!fs.existsSync(fpath)) {
@@ -119,16 +118,29 @@ http.createServer(function (req, res) {
         const _readStream = fs.createReadStream(fpath);
         _readStream.pipe(res);
       } else {
-        console.log('是否是文件夹：' + stat.isDirectory()) 
-        const { exec } = require('child_process');
-        exec('zip ' + '-r ' + fileName + ".zip " +fpath, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`执行的错误: ${error}`);
-            return;
-          }
-          console.log(`stdout: ${stdout}`);
-          console.error(`stderr: ${stderr}`);
+        console.log('是否是文件夹：' + stat.isDirectory())
+        const { spawn } = require('child_process');
+        const zip = spawn('zip', ['-r', fileName + '.zip', fpath]);
+
+        zip.stdout.on('data', (data) => {
+          console.log(`标准输出: ${data}`);
         });
+
+        zip.stderr.on('data', (data) => {
+          console.error(`标准错误: ${data}`);
+        });
+
+        zip.on('close', (code) => {
+          console.log(`子进程使用代码 ${code} 退出`);
+        });
+        // const { execFile } = require('child_process');
+        // const child = execFile('zip', ['-r', fileName + '.zip', fpath], (error, stdout, stderr) => {
+        //   if (error) {
+        //     throw error;
+        //   }
+        //   console.log(stdout);
+        // });
+        // console.log(child)
         res.setHeader(
           "Content-disposition",
           "attachment; filename=" + fileName + '.zip'
@@ -143,7 +155,7 @@ http.createServer(function (req, res) {
     }
     return;
   }
-  // zip打包压缩不需要那么多层级的文件夹
+  // spawn
   if (_lower_url.startsWith("/download")) {
     res.writeHead(200, { "Content-Type": "text/html" });
     const data = fs.readFileSync("./downloads.html");
@@ -151,15 +163,6 @@ http.createServer(function (req, res) {
     const fpath = `${cwd}/files/${decodeURI(fileName)}`;
     const fs = require('fs')
     var stat = fs.statSync(fpath)
-    const { exec } = require('child_process');
-    exec('zip ' + '-r ' + fileName + ".zip " +fpath, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`执行的错误: ${error}`);
-        return;
-      }
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-    });
     console.log(data)
     return res.end(data);
   }

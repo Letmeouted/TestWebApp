@@ -2,7 +2,8 @@
 <html>
 
 <head>
-  <title>Downloads</title>
+  <meta charset="UTF-8" />
+  <title>下载中心</title>
   <script type="text/javascript">
     function AnchorTemplate(url, name) {
       return `<a target="_blank" href="${url}">${name}</a> <br/> <hr/>`;
@@ -22,10 +23,10 @@
     }
     </script>
 </head>
-
+<!--点击超链接之后立即刷新页面  -->
 <body onload="load()">
-  <h2>Files List</h2>
-  <a href="/"><button>Back to Index</button></a> <br />
+  <h2>文件下载中心</h2>
+  <a href="/"><button>返回首面</button></a> <br />
   <div id="files"></div>
 </body>
 
