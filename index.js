@@ -31,7 +31,7 @@ http.createServer(function (req, res) {
       const { exec } = require('child_process');
       exec('perl ' + "analysis.pl " + "-i " + "files/" + fileName + " -e GBK", (error, stdout, stderr) => {
         if (error) {
-          console.error(`执行的错误: ${error}`);
+          console.error(`执行出错: ${error}`);
           return;
         }
         console.log(`stdout: ${stdout}`);
@@ -74,7 +74,6 @@ http.createServer(function (req, res) {
         console.log(`stdout: ${stdout}`);
         console.error(`stderr: ${stderr}`);
       });
-
       req.on("data", (chunk) => {
         binary.push(...chunk);
         console.log(chunk)
@@ -120,9 +119,9 @@ http.createServer(function (req, res) {
         const _readStream = fs.createReadStream(fpath);
         _readStream.pipe(res);
       } else {
-        console.log('是否是文件夹：' + stat.isDirectory())
+        console.log('是否是文件夹：' + stat.isDirectory()) 
         const { exec } = require('child_process');
-        exec('zip ' + "-r " + fileName + ".zip " + fpath, (error, stdout, stderr) => {
+        exec('zip ' + '-r ' + fileName + ".zip " +fpath, (error, stdout, stderr) => {
           if (error) {
             console.error(`执行的错误: ${error}`);
             return;
@@ -144,7 +143,7 @@ http.createServer(function (req, res) {
     }
     return;
   }
-
+  // zip打包压缩不需要那么多层级的文件夹
   if (_lower_url.startsWith("/download")) {
     res.writeHead(200, { "Content-Type": "text/html" });
     const data = fs.readFileSync("./downloads.html");
@@ -152,25 +151,15 @@ http.createServer(function (req, res) {
     const fpath = `${cwd}/files/${decodeURI(fileName)}`;
     const fs = require('fs')
     var stat = fs.statSync(fpath)
-    if (stat.isDirectory()== true) {
-      console.log('是否是文件夹：' + stat.isDirectory())
-      const { exec } = require('child_process');
-      exec('zip ' + "-r " + fileName + ".zip " + fpath, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`执行的错误: ${error}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-      });
-      res.setHeader(
-        "Content-disposition",
-        "attachment; filename=" + fileName + '.zip'
-      );
-      res.writeHead(200, { "Content-Type": "application/octet-stream" });
-      const _readStream = fs.createReadStream('./' + fileName + '.zip');
-      _readStream.pipe(res);
-    }
+    const { exec } = require('child_process');
+    exec('zip ' + '-r ' + fileName + ".zip " +fpath, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`执行的错误: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
     console.log(data)
     return res.end(data);
   }
@@ -185,4 +174,3 @@ http.createServer(function (req, res) {
   );
 })
   .listen(8000);
-
