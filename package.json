@@ -15,5 +15,7 @@
   "author": "Letmeouted",
   "license": "ISC",
   "dependencies": {
+    "compressing": "^1.5.1",
+    "jszip": "^3.6.0"
   }
 }
