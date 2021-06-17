@@ -3,7 +3,6 @@ const http = require("http");
 const JSZIP = require("jszip");
 const mkdirs = require("jm-mkdirs")
 var cwd = process.cwd();
-const compressing = require('compressing');
 console.log(cwd)
 try {
   fs.mkdirSync(cwd + "/files/");
