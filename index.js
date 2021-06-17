@@ -1,12 +1,15 @@
 const fs = require("fs");
 const http = require("http");
 const JSZIP = require("jszip");
+const mkdirs = require("jm-mkdirs")
 var cwd = process.cwd();
 const compressing = require('compressing');
 console.log(cwd)
 try {
   fs.mkdirSync(cwd + "/files/");
-} catch (err) { }
+} catch (err) {
+  console.log(err)
+}
 http.createServer(function (req, res) {
   const url = req.url;
   const _lower_url = url.toLowerCase();
@@ -20,16 +23,49 @@ http.createServer(function (req, res) {
   }
   if (_lower_url.startsWith("/api/upload") && method == "post") {
     try {
+      var date = new Date()
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+      var hour = date.getHours();
+      var minutes = date.getMinutes();
+      var second = date.getSeconds()
+      console.log(hour)
+      console.log(minutes)
+      console.log(second)
+      if (month < 10) {
+        month = "0" + month
+      }
+      if (day < 10) {
+        day = "0" + day;
+      }
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      if (second < 10) {
+        second = "0" + second;
+      }
+      if (minutes < 10) {
+        minutes = "0" + minutes;
+      }
+      var nowDate = year + month + day + hour + minutes + second;
+      var nowDay = year + month + day
+      console.log(nowDay)
+      console.log(cwd)
+      var myPath = cwd + "/files/" + nowDay + "/" + nowDate + "/"
+      mkdirs.sync(myPath)
       let binary = [];
       if (!url.includes("?") || !url.includes("filename=")) {
         res.writeHead(400);
         res.end("bad request");
       }
+      console.log(myPath)
       const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
-      const fpath = `${cwd}/files/${fileName}`;
+      const fpath = `${cwd}/files/${nowDay}/${nowDate}/${fileName}`;
+      console.log(fileName)
       console.log(fpath)
       const { exec } = require('child_process');
-      exec('perl ' + "analysis.pl " + "-i " + "files/" + fileName + " -e GBK", (error, stdout, stderr) => {
+      exec('perl ' + "analysis.pl " + "-i " + "files/" + nowDay + "/" + nowDate + "/" + fileName + " -e GBK", (error, stdout, stderr) => {
         if (error) {
           console.error(`执行出错: ${error}`);
           return;
@@ -62,11 +98,11 @@ http.createServer(function (req, res) {
         res.end("bad request");
       }
       const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
-      const fpath = `${cwd}/files/${fileName}`;
+      const fpath = `${cwd}/files/${nowDay}/${nowDate}/${fileName}`;
       console.log(fpath)
       const fs = require('fs')
       const { exec } = require('child_process');
-      exec('perl ' + "analysis.pl " + "-i " + "files/" + fileName + "-e GBK", (error, stdout, stderr) => {
+      exec('perl ' + "analysis.pl " + "-i " + "files/" + nowDay + "/" + nowDate + "/" + fileName + "-e GBK", (error, stdout, stderr) => {
         if (error) {
           console.error(`执行的错误: ${error}`);
           return;
@@ -153,33 +189,17 @@ http.createServer(function (req, res) {
               level: 9
             }
           }).then(function (content) {
-            fs.writeFileSync(currPath + '/zip/'+fileName + ".zip", content, "utf-8");//将打包的内容写入 当前目录下的 .zip中
+            fs.writeFileSync(currPath + '/zip/' + fileName + ".zip", content, "utf-8");//将打包的内容写入 当前目录下的 .zip中
             res.setHeader(
               "Content-disposition",
               "attachment; filename=" + filezip
             );
             res.writeHead(200, { "Content-Type": "application/octet-stream" });
-            const _readStream = fs.createReadStream('./zip/'+filezip);
+            const _readStream = fs.createReadStream('./zip/' + filezip);
             _readStream.pipe(res);
           });
         }
-        
         startZIP();
-        // const { spawn } = require('child_process');
-
-        // const zip = spawn('zip', ['-r', filezip, fpath]);
-
-        // zip.stdout.on('data', (data) => {
-        //   console.log(`标准输出: ${data}`);
-        // });
-
-        // zip.stderr.on('data', (data) => {
-        //   console.error(`标准错误: ${data}`);
-        // });
-
-        // zip.on('close', (code) => {
-        //   console.log(`子进程使用代码 ${code} 退出`);
-        // });
       }
     } catch (err) {
       res.writeHead(400);
@@ -191,14 +211,14 @@ http.createServer(function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html" });
     const data = fs.readFileSync("./downloads.html");
     const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
-    const fpath = `${cwd}/files/${decodeURI(fileName)}`;
+    const fpath = `${cwd}/files/${nowDay}/${nowDate}${decodeURI(fileName)}`;
     const fs = require('fs')
     var stat = fs.statSync(fpath)
     console.log(data)
     return res.end(data);
   }
   if (_lower_url.startsWith("/api/files-list")) {
-    const files = fs.readdirSync("./files/");
+    const files = fs.readdirSync("./files/"+nowDay+"/"+nowDate+"/");
     res.writeHead(200, { "Content-Type": "application/json" });
     return res.end(JSON.stringify({ files }));
   }

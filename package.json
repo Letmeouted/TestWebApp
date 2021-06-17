@@ -10,12 +10,15 @@
   "keywords": [
     "upload",
     "node",
-    "html"
+    "html",
+    "aneuFiler"
   ],
   "author": "Letmeouted",
   "license": "ISC",
   "dependencies": {
     "compressing": "^1.5.1",
-    "jszip": "^3.6.0"
+    "jm-mkdirs": "0.0.1",
+    "jszip": "^3.6.0",
+    "mdui": "^1.0.2"
   }
 }

@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <title>AneuFiler</title>
+    <script src="node_modules/mdui/dist/js/mdui.min.js"></script>
+    <link rel="stylesheet" href="node_modules/mdui/dist/css/mdui.min.css" />
     <script type="text/javascript">
       function onload() {}
 
@@ -58,12 +60,107 @@
       }
     </script>
   </head>
-  <body onload="onload()">
+  <body onload="onload()" class="mdui-theme-primary-indigo mdui-bottom-nav-fixed">
+    <div class="mdui-tab mdui-tab-centered mdui-tab-full-width" mdui-tab>
+      <a href="#tab1" class="mdui-ripple mdui-tab-active" onmousedown="mOver1(this)"><i id="tab1_icon"
+          class="mdui-icon material-icons">&#xe24d;</i></a>
+      <a href="#tab2" class="mdui-ripple" onmousedown="mOver2(this)"><i id="tab2_icon"
+          class="mdui-icon material-icons">&#xe8b8;</i></a>
+      <a href="#tab3" class="mdui-ripple" onmousedown="mOver3(this)">
+        <i id="tab3_icon" class="mdui-icon material-icons">&#xe616;</i>
+      </a>
+      <a href="#tab4" class="mdui-ripple" onmousedown="mOver4(this)">
+        <i id="tab4_icon" class="mdui-icon material-icons">&#xe000;</i>
+      </a>
+    </div>
+    <div id="tab1" class="mdui-p-a-1">
+      <div id="holder"
+        class="mdui-valign mdui-hoverable mdui-ripple mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded"
+        style="height: 200px">
+        <p class="mdui-center">
+          <i class="mdui-icon material-icons">&#xe226;</i>文件处理区
+        </p>
+      </div>
+      <div class="mdui-m-x-2 mdui-m-y-4">
+        <button class="mdui-btn mdui-ripple mdui-color-orange mdui-btn-raised mdui-float-left"
+          onclick="window.open('https://github.com/NTLx/AneuFiler')">
+          <i class="mdui-icon material-icons">&#xe8fd;</i>帮助
+        </button>
+        <div class="mdui-valign mdui-float-left" style="height:15px;margin-left: 18px;">
+          <p class="mdui-center">
+            <br />注意：文件名当中不能含有空格、特殊符号、中文
+          </p>
+        </div>
+        <button class="mdui-btn mdui-ripple mdui-color-teal mdui-btn-raised mdui-float-right" id="prompt"
+          mdui-dialog="{target:'#closed'}">
+          <i class="mdui-icon material-icons">&#xe879;</i>退出
+        </button>
+  
+        <div class="mdui-dialog" id="closed">
+          <div class="mdui-dialog-title">你确定要退出该窗口吗？</div>
+          <div class="mdui-dialog-content"></div>
+          <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-confirm onclick="javascript:window.close()">
+              确定
+            </button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+    <div id="tab2" class="mdui-p-a-3">
+      <div class="mdui-valign mdui-center mdui-p-a-3">
+        <label class="mdui-switch mdui-center">
+          <input id="sample_out" type="checkbox" />
+          <i class="mdui-switch-icon"></i>
+          <span class="mdui-m-a-1">按样本输出</span>
+        </label>
+      </div>
+      <div class="mdui-valign mdui-center mdui-p-a-3">
+        <label class="mdui-switch mdui-center">
+          <input id="closebox" type="checkbox" />
+          <i class="mdui-switch-icon"></i>
+          <span class="mdui-m-a-1">关闭退出提示窗口</span>
+        </label>
+      </div>
+      <div class="mdui-valign mdui-center mdui-p-a-3">
+        <label class="mdui-center">选择输出格式</label>
+      </div>
+      <div class="mdui-valign mdui-center" style="width: 140px; height: 40px">
+        <form class="mdui-center mdui-p-a-1">
+          <label class="mdui-radio mdui-center ">
+            <input id="utf" type="radio" name="group1" />
+            <i class="mdui-radio-icon"></i>UTF-8
+          </label>
+          <label class="mdui-radio mdui-center">
+            <input id="gbk" type="radio" name="group1" checked />
+            <i class="mdui-radio-icon"></i>GBK
+          </label>
+        </form>
+      </div>
+    </div>
+    <div id="tab3" class="mdui-p-a-1">
+      <div class="layout">
+        <div class="mdui-col-xs-12 panel">运行时信息</div>
+        <div id="restore" class="mdui-col-xs-12 result2">
+        </div>
+      </div>
+    </div>
+    <div id="tab4" class="mdui-p-a-1">
+      <div class="layout">
+        <div class="mdui-col-xs-12 panel">文件处理有误信息</div>
+        <div id="restderr" class="mdui-col-xs-12 result1">
+        </div>
+      </div>
+    </div>
     <input id="the-file" name="file" type="file" accept=".txt,.csv"/>
     <button onclick="sub()">上传文件</button>
     <button onclick="deal()" style="display: none;">处理</button>
     <p id="response"></p>
-    <a href="./downloads.html"><button>下载页面</button></a>  
+    <a href="./downloads.html"><button>下载页面</button></a>
+    <!-- 获取上传文件时当前的时间戳 -->
+      <!-- 按照上传文件的时间戳进行分类 -->
   </body>
   <script>
     var fileinput = document.getElementById("the-file");
@@ -80,11 +177,13 @@
         };
         window.fileMeta = {
           name: this.files[0].name,
-          type: this.files[0].type,
+          type: this.files[0].type
         };
+        console.log(this.files[0])
         reader.readAsArrayBuffer(this.files[0]);
       },
       false
     );
+    
   </script>
 </html>
