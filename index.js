@@ -5,7 +5,11 @@ const mkdirs = require("jm-mkdirs")
 var cwd = process.cwd();
 console.log(cwd)
 try {
-  fs.mkdirSync(cwd + "/files/");
+  var rootpath = cwd + "/files/"
+  if(!fs.existsSync(rootpath)){
+    console.log(rootpath+" 路径不存在,便新建一个该文件夹")
+    fs.mkdirSync(rootpath);
+  }
 } catch (err) {
   console.log(err)
 }
@@ -210,14 +214,15 @@ http.createServer(function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html" });
     const data = fs.readFileSync("./downloads.html");
     const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
-    const fpath = `${cwd}/files/${nowDay}/${nowDate}${decodeURI(fileName)}`;
+    const fpath = `${cwd}/files/${nowDay}/${nowDate}/${decodeURI(fileName)}`;
+    console.log(fpath)
     const fs = require('fs')
     var stat = fs.statSync(fpath)
     console.log(data)
     return res.end(data);
   }
   if (_lower_url.startsWith("/api/files-list")) {
-    const files = fs.readdirSync("./files/"+nowDay+"/"+nowDate+"/");
+    const files = fs.readdirSync("./files/");
     res.writeHead(200, { "Content-Type": "application/json" });
     return res.end(JSON.stringify({ files }));
   }
