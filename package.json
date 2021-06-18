@@ -16,6 +16,7 @@
   "author": "Letmeouted",
   "license": "ISC",
   "dependencies": {
+    "element-ui": "^2.15.2",
     "jm-mkdirs": "0.0.1",
     "jszip": "^3.6.0",
     "mdui": "^1.0.2"
