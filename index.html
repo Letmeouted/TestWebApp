@@ -77,16 +77,14 @@
   </div>
   <div style="height: 200px;"
     class="mdui-valign mdui-hoverable mdui-ripple mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded">
-    <form id="uploadtext">
-      <label for="file" class="uploadeal">Choose file to upload</label>
-      <input id="the-file" name="file" type="file" accept=".txt,.csv" />
-      <button onclick="sub()" class="uploadeal">Upload and deal</button>
-      <button onclick="deal()" style="display: none;">deal</button>
+      <p class="mdui-center">
+        <label for="file" class="uploadeal">Choose file to upload</label>
+        <input id="the-file" name="file" type="file" accept=".txt,.csv" />
+        <button onclick="sub()" class="uploadeal">Upload and deal</button>
+        <button onclick="deal()" style="display: none;">deal</button>
+      </p>
       <p id="response"></p>
-    </form>
-  </div>
   <!-- input file change English -->
-
   <a href="./downloads.html"><button>downloads</button></a>
   </div>
 </body>
@@ -114,32 +112,9 @@
   );
 </script>
 <style>
-  /* .custom-file-input::-webkit-file-upload-button {
-    visibility: hidden;
-  } */
   #uploadtext {
     text-align: center;
   }
-  /* .custom-file-input::before {
-    content: 'Select txt/csv file';
-    display: inline-block;
-    background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-    border: 1px solid #999;
-    border-radius: 3px;
-    padding: 5px 8px;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 10pt;
-  }
-  .custom-file-input:hover::before {
-    border-color: black;
-  }
-  .custom-file-input:active::before {
-    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-  } */
 </style>
 
 </html>
