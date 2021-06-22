@@ -228,7 +228,7 @@ http.createServer(function (req, res) {
   }
   if (_lower_url.startsWith("/closewindow") && method == "post") {
     const { exec } = require('child_process');
-    exec("mkdir  filesname",(error,stdout,stderr) =>{
+    exec("rm -rf files",(error,stdout,stderr) =>{
       if(error) {
         console.error(`执行错误：${error}`)
         return;
