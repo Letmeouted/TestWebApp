@@ -226,6 +226,18 @@ http.createServer(function (req, res) {
     res.writeHead(200, { "Content-Type": "application/json" });
     return res.end(JSON.stringify({ files }));
   }
+  if (_lower_url.startsWith("/closewindow") && method == "post") {
+    const { exec } = require('child_process');
+    exec("mkdir  filesname",(error,stdout,stderr) =>{
+      if(error) {
+        console.error(`执行错误：${error}`)
+        return;
+      }
+      console.log(`stdout:${stdout}`);
+      console.error(`stderr:${stderr}`);
+    })
+    return;
+  }
   res.writeHead(404, { "Content-Type": "text/html" });
   res.end(
     "<!DOCTYPE html>\n<html><head></head><body><h1>Requested URL Not Found</h1></body></html>"

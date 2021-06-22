@@ -197,6 +197,17 @@
 		$("#utf").on("click", encod_status);
 		$("#gbk").on("click", encod_status);
 </script>
+<script>
+  window.addEventListener("beforeunload", function (e) {
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = '';
+      var xhr =new XMLHttpRequest();
+      xhr.open('POST',"/closewindow")
+      xhr.send()
+  });
+</script>
 <style>
   #uploadtext {
     text-align: center;
