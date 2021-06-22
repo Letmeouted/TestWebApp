@@ -165,6 +165,15 @@
 		function mOver4(obj) {
 			mdui.snackbar({ message: "进入异常输出面板", timeout: 1000 })
 		}
+    window.addEventListener("beforeunload", function (e) {
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = '';
+      var xhr =new XMLHttpRequest();
+      xhr.open('POST',"/closewindow")
+      xhr.send()
+  });
 </script>
 <script>
   var $ = mdui.$;
@@ -196,17 +205,6 @@
 		};
 		$("#utf").on("click", encod_status);
 		$("#gbk").on("click", encod_status);
-</script>
-<script>
-  window.addEventListener("beforeunload", function (e) {
-      // Cancel the event
-      e.preventDefault();
-      // Chrome requires returnValue to be set
-      e.returnValue = '';
-      var xhr =new XMLHttpRequest();
-      xhr.open('POST',"/closewindow")
-      xhr.send()
-  });
 </script>
 <style>
   #uploadtext {

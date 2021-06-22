@@ -131,7 +131,6 @@ http.createServer(function (req, res) {
     }
     return;
   }
-  // execute commond can not get file
   if (_lower_url.startsWith("/api/download")) {
     try {
       if (!url.includes("?") || !url.includes("filename=")) {
@@ -227,15 +226,17 @@ http.createServer(function (req, res) {
     return res.end(JSON.stringify({ files }));
   }
   if (_lower_url.startsWith("/closewindow") && method == "post") {
+    console.log("helloworld")
     const { exec } = require('child_process');
-    exec("rm -rf files",(error,stdout,stderr) =>{
+    exec("mkdir filesname",(error,stdout,stderr) =>{
       if(error) {
-        console.error(`执行错误：${error}`)
+        console.error(`execute error：${error}`)
         return;
       }
       console.log(`stdout:${stdout}`);
       console.error(`stderr:${stderr}`);
     })
+    res.writeHead(200,{"Content-Type": "text/html"})
     return;
   }
   res.writeHead(404, { "Content-Type": "text/html" });
