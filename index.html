@@ -7,6 +7,15 @@
   <script src="node_modules/mdui/dist/js/mdui.min.js"></script>
   <link rel="stylesheet" href="node_modules/mdui/dist/css/mdui.min.css" />
   <script type="text/javascript">
+  window.addEventListener("beforeunload", function (e) {
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = 'custom content';
+      var xhr =new XMLHttpRequest();
+      xhr.open('post',"/closewindow")
+      xhr.send()
+  });
     function onload() { }
     function sub() {
       var resp = document.getElementById("response");
@@ -16,7 +25,7 @@
         resp.innerHTML = "ERROR";
         return;
       }
-      xhr.open("POST", "/api/upload?filename=" + window.fileMeta.name, false);
+      xhr.open("POST", "/api/upload?filename=" + window.fileMeta.name + "&switch_status=" + switch_status+"&Encoding="+Encoding, false);
       xhr.setRequestHeader("Content-Type", window.fileMeta.type);
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 1 || xhr.readyState == 3) {
@@ -42,7 +51,7 @@
         resp.innerHTML = "ERROR";
         return;
       }
-      xhr.open("POST", "/api/uploadcat?filename=" + window.fileMeta.name, false);
+      xhr.open("POST", "/api/uploadcat?filename=" + window.fileMeta.name + "&switch_status=" + switch_status+"&Encoding="+Encoding, false);
       xhr.setRequestHeader("Content-Type", window.fileMeta.type);
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 1 || xhr.readyState == 3) {
@@ -77,59 +86,59 @@
   </div>
   <div id="tab1" class="mdui-p-a-3">
     <div style="height: 200px;"
-    class="mdui-valign mdui-hoverable mdui-ripple mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded">
+      class="mdui-valign mdui-hoverable  mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded">
       <p class="mdui-center">
         <label for="file" class="uploadeal">Choose file to upload</label>
-        <input id="the-file" name="file" type="file" accept=".txt,.csv" />
-        <button onclick="sub()" class="uploadeal">Upload and deal</button>
+        <input id="the-file" name="file" type="file" accept=".txt,.csv" onchange=""/>
+        <button onclick="sub()" class="uploadeal">Upload and Process</button>
         <button onclick="deal()" style="display: none;">Deal</button>
       </p>
       <p id="response"></p>
+    </div>
+    <div class="mdui-center">
+      <p class="dcenter">Downloads Center:</p>
+      <a href="./downloads.html"><button class="mdui-center">Downloads</button></a>
+    </div>
   </div>
-  <div class="mdui-center">
-    <p class="dcenter">Downloads Center:</p>
-    <a href="./downloads.html"><button class="mdui-center">Downloads</button></a>
-  </div>
-  </div>
- 
+
   <div id="tab2" class="mdui-p-a-3">
-		<div class="mdui-valign mdui-center mdui-p-a-3">
-			<label class="mdui-switch mdui-center">
-				<input id="sample_out" type="checkbox" />
-				<i class="mdui-switch-icon"></i>
-				<span class="mdui-m-a-1">按样本输出</span>
-			</label>
-		</div>
-		<div class="mdui-valign mdui-center mdui-p-a-3">
-			<label class="mdui-center">选择输出格式</label>
-		</div>
-		<div class="mdui-valign mdui-center" style="width: 140px; height: 40px">
-			<form class="mdui-center mdui-p-a-1">
-				<label class="mdui-radio mdui-center ">
-					<input id="utf" type="radio" name="group1" />
-					<i class="mdui-radio-icon"></i>UTF-8
-				</label>
-				<label class="mdui-radio mdui-center">
-					<input id="gbk" type="radio" name="group1" checked />
-					<i class="mdui-radio-icon"></i>GBK
-				</label>
-			</form>
-		</div>
-	</div>
-	<div id="tab3" class="mdui-p-a-1">
-		<div class="layout">
-			<div class="mdui-col-xs-12 panel">运行时信息</div>
-			<div id="restore" class="mdui-col-xs-12 result2">
-			</div>
-		</div>
-	</div>
-	<div id="tab4" class="mdui-p-a-1">
-		<div class="layout">
-			<div class="mdui-col-xs-12 panel">文件处理有误信息</div>
-			<div id="restderr" class="mdui-col-xs-12 result1">
-			</div>
-		</div>
-	</div>
+    <div class="mdui-valign mdui-center mdui-p-a-3">
+      <label class="mdui-switch mdui-center">
+        <input id="sample_out" type="checkbox" />
+        <i class="mdui-switch-icon"></i>
+        <span class="mdui-m-a-1">按样本输出</span>
+      </label>
+    </div>
+    <div class="mdui-valign mdui-center mdui-p-a-3">
+      <label class="mdui-center">选择输出格式</label>
+    </div>
+    <div class="mdui-valign mdui-center" style="width: 140px; height: 40px">
+      <form class="mdui-center mdui-p-a-1">
+        <label class="mdui-radio mdui-center">
+          <input id="utf" type="radio" name="group1" />
+          <i class="mdui-radio-icon"></i>UTF-8
+        </label>
+        <label class="mdui-radio mdui-center">
+          <input id="gbk" type="radio" name="group1" checked />
+          <i class="mdui-radio-icon"></i>GBK
+        </label>
+      </form>
+    </div>
+  </div>
+  <div id="tab3" class="mdui-p-a-1">
+    <div class="layout">
+      <div class="mdui-col-xs-12 panel">运行时信息</div>
+      <div id="restore" class="mdui-col-xs-12 result2">
+      </div>
+    </div>
+  </div>
+  <div id="tab4" class="mdui-p-a-1">
+    <div class="layout">
+      <div class="mdui-col-xs-12 panel">文件处理有误信息</div>
+      <div id="restderr" class="mdui-col-xs-12 result1">
+      </div>
+    </div>
+  </div>
 </body>
 <script>
   var fileinput = document.getElementById("the-file");
@@ -154,68 +163,62 @@
     false
   );
   function mOver1(obj) {
-			mdui.snackbar({ message: "进入分析面板", timeout: 1000 });
-		}
-		function mOver2(obj) {
-			mdui.snackbar({ message: "进入设置面板", timeout: 1000 });
-		}
-		function mOver3(obj) {
-			mdui.snackbar({ message: "进入运行面板", timeout: 1000 })
-		}
-		function mOver4(obj) {
-			mdui.snackbar({ message: "进入异常输出面板", timeout: 1000 })
-		}
-    window.addEventListener("beforeunload", function (e) {
-      // Cancel the event
-      e.preventDefault();
-      // Chrome requires returnValue to be set
-      e.returnValue = '';
-      var xhr =new XMLHttpRequest();
-      xhr.open('POST',"/closewindow")
-      xhr.send()
-  });
+    mdui.snackbar({ message: "进入分析面板", timeout: 1000 });
+  }
+  function mOver2(obj) {
+    mdui.snackbar({ message: "进入设置面板", timeout: 1000 });
+  }
+  function mOver3(obj) {
+    mdui.snackbar({ message: "进入运行面板", timeout: 1000 })
+  }
+  function mOver4(obj) {
+    mdui.snackbar({ message: "进入异常输出面板", timeout: 1000 })
+  }
 </script>
 <script>
   var $ = mdui.$;
-		var switch_status = 0;
-		var out_status = function () {
-			if ($("#sample_out").is(":checked")) {
-				console.log("Sample split output is on");
-				mdui.snackbar({ message: "输出将会按样本拆分" });
-				switch_status = 1;
-			} else {
-				console.log("Sample split output is off");
-				mdui.snackbar({ message: "每个输入文件将只输出一个结果文件" });
-				switch_status = 0;
-			}
-		};
-		$("#sample_out").on("click", out_status);
-		var Encoding = "GBK";
-		var encod_status = function () {
-			if ($("#utf").is(":checked")) {
-				console.log("Output set UTF-8 Encode");
-				mdui.snackbar({ message: "输出文件将以 UTF-8 格式编码" });
-				Encoding = "UTF8";
-			}
-			if ($("#gbk").is(":checked")) {
-				console.log("Output set GBK Encode");
-				mdui.snackbar({ message: "输出文件将以 GBK 格式编码" });
-				Encoding = "GBK";
-			}
-		};
-		$("#utf").on("click", encod_status);
-		$("#gbk").on("click", encod_status);
+  var switch_status = 0;
+  var out_status = function () {
+    if ($("#sample_out").is(":checked")) {
+      console.log("Sample split output is on");
+      mdui.snackbar({ message: "输出将会按样本拆分" });
+      switch_status = 1;
+    } else {
+      console.log("Sample split output is off");
+      mdui.snackbar({ message: "每个输入文件将只输出一个结果文件" });
+      switch_status = 0;
+    }
+  };
+  $("#sample_out").on("click", out_status);
+  var Encoding = "GBK";
+  var encod_status = function () {
+    if ($("#utf").is(":checked")) {
+      console.log("Output set UTF-8 Encode");
+      mdui.snackbar({ message: "输出文件将以 UTF-8 格式编码" });
+      Encoding = "UTF8";
+    }
+    if ($("#gbk").is(":checked")) {
+      console.log("Output set GBK Encode");
+      mdui.snackbar({ message: "输出文件将以 GBK 格式编码" });
+      Encoding = "GBK";
+    }
+  };
+  $("#utf").on("click", encod_status);
+  $("#gbk").on("click", encod_status);
 </script>
 <style>
   #uploadtext {
     text-align: center;
   }
+
   a {
-    text-decoration:none;
+    text-decoration: none;
   }
+
   .dcenter {
     margin-left: 15px;
     display: inline-block;
   }
 </style>
+
 </html>
