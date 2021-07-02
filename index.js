@@ -84,61 +84,13 @@ http.createServer(function (req, res) {
       });
       req.on("data", (chunk) => {
         binary.push(...chunk);
+        console.log(chunk)
       });
-      const filezip = nowDay + '.zip'
-      console.log(filezip)
-      console.log(__dirname)
-      let path = require("path");//工具模块，处理文件路径的小工具
-      let zip = new JSZIP();
-
-      //读取目录及文件
-      function readDir(obj, nowPath) {
-        console.log("uploadpath" + nowPath)
-        let files = fs.readdirSync(nowPath);//读取目录中的所有文件及文件夹（同步操作）
-        console.log('uploadfiles' + files)
-        console.log(nowDay)
-        files.forEach(function (nowDay, index) {//遍历检测目录中的文件
-          console.log(nowDay, index);//打印当前读取的文件名
-          let fillPath = nowPath + "/" + nowDay;
-          let file = fs.statSync(fillPath);//获取一个文件的属性
-          console.log(file.isDirectory())
-          if (file.isDirectory()) {//如果是目录的话，继续查询
-            console.log('hhello')
-            let dirlist = zip.folder(nowDay);//压缩对象中生成该目录
-            readDir(dirlist, fillPath);//重新检索目录文件
-          } else {
-            obj.file(nowDay, fs.readFileSync(fillPath));//压缩目录添加文件
-          }
-        });
-      }
-
-      //开始压缩文件
-      function startZIP() {
-        var currPath = __dirname;//文件的绝对路径 当前js所在的绝对路径
-        var targetDir = path.join(currPath, "files/" + nowDay);
-        readDir(zip, targetDir);
-        zip.generateAsync({//设置压缩格式，开始打包
-          type: "nodebuffer",//nodejs用
-          compression: "DEFLATE",//压缩算法
-          compressionOptions: {//压缩级别
-            level: 9
-          }
-        }).then(function (content) {
-          fs.writeFileSync(currPath + '/zip/' + nowDay + ".zip", content, "utf-8");//将打包的内容写入 当前目录下的 .zip中
-          res.setHeader(
-            "Content-disposition",
-            "attachment; filename=" + filezip
-          );
-          res.writeHead(200, { "Content-Type": "application/octet-stream" });
-          const _readStream = fs.createReadStream('./zip/' + filezip);
-          _readStream.pipe(res);
-        });
-      }
-      startZIP();
       req.on("end", () => {
         fs.writeFile(fpath, new Uint8Array(binary), (err) =>
           err ? console.log(err) : undefined
         );
+        // 网页自动处理文件自动导出压缩包文件
         const filezip = nowDay + '.zip'
         console.log(filezip)
         console.log(__dirname)
@@ -154,6 +106,7 @@ http.createServer(function (req, res) {
           files.forEach(function (nowDay, index) {//遍历检测目录中的文件
             console.log(nowDay, index);//打印当前读取的文件名
             let fillPath = nowPath + "/" + nowDay;
+            console.log(fillPath)
             let file = fs.statSync(fillPath);//获取一个文件的属性
             console.log(file.isDirectory())
             if (file.isDirectory()) {//如果是目录的话，继续查询
@@ -232,58 +185,6 @@ http.createServer(function (req, res) {
         fs.writeFile(fpath, new Uint8Array(binary), (err) =>
           err ? console.log(err) : undefined
         );
-        const filezip = nowDay + '.zip'
-        console.log(filezip)
-        console.log(__dirname)
-        let path = require("path");//工具模块，处理文件路径的小工具
-        let zip = new JSZIP();
-
-        //读取目录及文件
-        function readDir(obj, nowPath) {
-          console.log("uploadpath" + nowPath)
-          let files = fs.readdirSync(nowPath);//读取目录中的所有文件及文件夹（同步操作）
-          console.log('uploadfiles' + files)
-          console.log(nowDay)
-          files.forEach(function (nowDay, index) {//遍历检测目录中的文件
-            console.log(nowDay, index);//打印当前读取的文件名
-            let fillPath = nowPath + "/" + nowDay;
-            let file = fs.statSync(fillPath);//获取一个文件的属性
-            console.log(file.isDirectory())
-            if (file.isDirectory()) {//如果是目录的话，继续查询
-              console.log('hhello')
-              let dirlist = zip.folder(nowDay);//压缩对象中生成该目录
-              readDir(dirlist, fillPath);//重新检索目录文件
-            } else {
-              obj.file(nowDay, fs.readFileSync(fillPath));//压缩目录添加文件
-            }
-          });
-        }
-
-        //开始压缩文件
-        function startZIP() {
-          var currPath = __dirname;//文件的绝对路径 当前js所在的绝对路径
-          var targetDir = path.join(currPath, "files/" + nowDay);
-          readDir(zip, targetDir);
-          zip.generateAsync({//设置压缩格式，开始打包
-            type: "nodebuffer",//nodejs用
-            compression: "DEFLATE",//压缩算法
-            compressionOptions: {//压缩级别
-              level: 9
-            }
-          }).then(function (content) {
-            fs.writeFileSync(currPath + '/zip/' + nowDay + ".zip", content, "utf-8");//将打包的内容写入 当前目录下的 .zip中
-            res.setHeader(
-              "Content-disposition",
-              "attachment; filename=" + filezip
-            );
-            res.writeHead(200, { "Content-Type": "application/octet-stream" });
-            const _readStream = fs.createReadStream('./zip/' + filezip);
-            _readStream.pipe(res);
-          });
-        }
-        startZIP();
-        res.writeHead(200);
-        res.end("ok");
       });
     } catch (error) {
       res.writeHead(400);
@@ -370,7 +271,6 @@ http.createServer(function (req, res) {
         }
         startZIP();
       }
-
     } catch (err) {
       res.writeHead(400);
       res.end(err.toString());
@@ -381,7 +281,7 @@ http.createServer(function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html" });
     const data = fs.readFileSync("./downloads.html");
     const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
-    const fpath = `${cwd}/filelog/${nowDay}/${nowDate}/${decodeURI(fileName)}`;
+    const fpath = `${cwd}/files/${nowDay}/${nowDate}/${decodeURI(fileName)}`;
     console.log(fpath)
     const fs = require('fs')
     var stat = fs.statSync(fpath)
