@@ -1,4 +1,4 @@
-var fileName ="gsdgsdfsa.txt"
+var fileName ="helloworld.zip"
 var index =fileName.lastIndexOf(".")
 console.log(index)
 var extension= fileName.substring(index+1,fileName.length)
