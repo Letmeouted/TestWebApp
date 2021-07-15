@@ -88,19 +88,21 @@
     <div style="height: 200px;"
       class="mdui-valign mdui-hoverable  mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded">
       <p class="mdui-center">
-        <label for="the-file" class="button">Click here</label>
+        <label for="the-file" class="button"><i class="mdui-icon material-icons">&#xe226;</i>文件处理区</label>
         <input id="the-file" name="file" type="file" style="display: none;" accept=".txt,.csv" onchange="" />
     </p>  
       <div>
-        <label for="uploadfile" class="button">Upload</label>
+        <label for="uploadfile" class="button">点击上传并处理</label>
         <button id="uploadfile" onclick="sub()" class="uploadeal" style="display: none;">Upload and Process</button>
         <button onclick="deal()" style="display: none;">Deal</button>
       </div>
-      <p id="response"></p>
+      <p style="margin-left: 10px;" id="response"></p>
     </div>
-    <div class="mdui-center">
-      <p class="dcenter">Downloads Center:</p>
-      <a href="./downloads.html"><button class="mdui-center">Downloads</button></a>
+    <div class="mdui-valign mdui-hoverable mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded" style="height: 100px;">
+      <p class="mdui-center">
+        <label for="downloadsfile" class="button"><i class="mdui-icon material-icons">&#xe226;</i>文件下载区</label>
+        <button style="display: none;" id="downloadsfile"  onclick="javascript:window.location.href='./downloads.html'">下载</button>
+      </p>
     </div>
   </div>
 

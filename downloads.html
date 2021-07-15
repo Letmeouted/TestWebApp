@@ -3,7 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>download</title>
+  <title>Downloads Center</title>
+  <script src="node_modules/mdui/dist/js/mdui.min.js"></script>
+  <link rel="stylesheet" href="node_modules/mdui/dist/css/mdui.min.css" />
   <script type="text/javascript">
     function AnchorTemplate(url, name) {
       return `<a target="_blank" href="${url}">${name}</a> <br/> <hr/>`;
@@ -24,16 +26,11 @@
     }
     </script>
 </head>
-<body onload="load()" class="download">
-  <div class="downloadmodule">
-    <h4>Files Downloads Center</h4>
-  <a href="/"><button>Return</button></a> <br/>
+<body onload="load()" class="download mdui-theme-primary-indigo mdui-bottom-nav-fixed">
+  <div style="height: 200px;"class="mdui-valign mdui-hoverable  mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded">
+    <p class="mdui-center">文件下载区</p>
+  <button onclick="javascript:window.location.href='/'">返回主页</button> <br/>
   <div id="files"></div>
   </div>  
 </body>
-<style>
-  .downloadmodule{
-    border: 1px solid #000;
-  }
-</style>
 </html>
