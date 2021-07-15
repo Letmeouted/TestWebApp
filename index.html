@@ -7,15 +7,15 @@
   <script src="node_modules/mdui/dist/js/mdui.min.js"></script>
   <link rel="stylesheet" href="node_modules/mdui/dist/css/mdui.min.css" />
   <script type="text/javascript">
-  window.addEventListener("beforeunload", function (e) {
+    window.addEventListener("beforeunload", function (e) {
       // Cancel the event
       e.preventDefault();
       // Chrome requires returnValue to be set
       e.returnValue = 'custom content';
-      var xhr =new XMLHttpRequest();
-      xhr.open('post',"/closewindow")
+      var xhr = new XMLHttpRequest();
+      xhr.open('post', "/closewindow")
       xhr.send()
-  });
+    });
     function onload() { }
     function sub() {
       var resp = document.getElementById("response");
@@ -25,7 +25,7 @@
         resp.innerHTML = "ERROR";
         return;
       }
-      xhr.open("POST", "/api/upload?filename=" + window.fileMeta.name + "&switch_status=" + switch_status+"&Encoding="+Encoding, false);
+      xhr.open("POST", "/api/upload?filename=" + window.fileMeta.name + "&switch_status=" + switch_status + "&Encoding=" + Encoding, false);
       xhr.setRequestHeader("Content-Type", window.fileMeta.type);
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 1 || xhr.readyState == 3) {
@@ -51,7 +51,7 @@
         resp.innerHTML = "ERROR";
         return;
       }
-      xhr.open("POST", "/api/uploadcat?filename=" + window.fileMeta.name + "&switch_status=" + switch_status+"&Encoding="+Encoding, false);
+      xhr.open("POST", "/api/uploadcat?filename=" + window.fileMeta.name + "&switch_status=" + switch_status + "&Encoding=" + Encoding, false);
       xhr.setRequestHeader("Content-Type", window.fileMeta.type);
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 1 || xhr.readyState == 3) {
@@ -88,11 +88,14 @@
     <div style="height: 200px;"
       class="mdui-valign mdui-hoverable  mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded">
       <p class="mdui-center">
-        <label for="file" class="uploadeal">Choose file to upload</label>
-        <input id="the-file" name="file" type="file" accept=".txt,.csv" onchange=""/>
-        <button onclick="sub()" class="uploadeal">Upload and Process</button>
+        <label for="the-file" class="button">Click here</label>
+        <input id="the-file" name="file" type="file" style="display: none;" accept=".txt,.csv" onchange="" />
+    </p>  
+      <div>
+        <label for="uploadfile" class="button">Upload</label>
+        <button id="uploadfile" onclick="sub()" class="uploadeal" style="display: none;">Upload and Process</button>
         <button onclick="deal()" style="display: none;">Deal</button>
-      </p>
+      </div>
       <p id="response"></p>
     </div>
     <div class="mdui-center">
@@ -211,10 +214,21 @@
     text-align: center;
   }
 
+  /* #the-file {
+    display: none;
+    padding: 5px 10px;
+    background: #00b0f0;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+  } */
+  /* 鼠标放置到某标签时出现小手css */
   a {
     text-decoration: none;
   }
-
+  .button {
+    cursor: pointer;
+  }
   .dcenter {
     margin-left: 15px;
     display: inline-block;
