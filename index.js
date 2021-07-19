@@ -151,47 +151,47 @@ http.createServer(function (req, res) {
     }
     return;
   }
-  if (_lower_url.startsWith("/api/uploadcat") && method == "post") {
-    try {
-      let binary = [];
-      if (!url.includes("?") || !url.includes("filename=")) {
-        res.writeHead(400);
-        res.end("bad request");
-      }
-      const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
-      const switchStatus = url.match(/\?.*?switch_status=([^&]*)&{0,1}/)[1];
-      const Encoding = url.match(/\?.*?Encoding=([^&]*)&{0,1}/)[1];
-      const fpath = `${cwd}/files/${nowDay}/${nowDate}/${fileName}`;
-      console.log(fileName)
-      console.log(switchStatus)
-      console.log(Encoding)
-      console.log(fpath)
-      const fs = require('fs')
-      const { exec } = require('child_process');
-      exec('perl ' + "analysis.pl " + "-i " + "files/" + nowDay + "/" + nowDate + "/" + fileName + " -e " + Encoding + " -s " + switchStatus, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`执行的错误: ${error}`);
-          return;
-        }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-      });
-      req.on("data", (chunk) => {
-        binary.push(...chunk);
-        console.log(chunk)
-      });
+  // if (_lower_url.startsWith("/api/uploadcat") && method == "post") {
+  //   try {
+  //     let binary = [];
+  //     if (!url.includes("?") || !url.includes("filename=")) {
+  //       res.writeHead(400);
+  //       res.end("bad request");
+  //     }
+  //     const fileName = url.match(/\?.*?filename=([^&]*)&{0,1}/)[1];
+  //     const switchStatus = url.match(/\?.*?switch_status=([^&]*)&{0,1}/)[1];
+  //     const Encoding = url.match(/\?.*?Encoding=([^&]*)&{0,1}/)[1];
+  //     const fpath = `${cwd}/files/${nowDay}/${nowDate}/${fileName}`;
+  //     console.log(fileName)
+  //     console.log(switchStatus)
+  //     console.log(Encoding)
+  //     console.log(fpath)
+  //     const fs = require('fs')
+  //     const { exec } = require('child_process');
+  //     exec('perl ' + "analysis.pl " + "-i " + "files/" + nowDay + "/" + nowDate + "/" + fileName + " -e " + Encoding + " -s " + switchStatus, (error, stdout, stderr) => {
+  //       if (error) {
+  //         console.error(`执行的错误: ${error}`);
+  //         return;
+  //       }
+  //       console.log(`stdout: ${stdout}`);
+  //       console.error(`stderr: ${stderr}`);
+  //     });
+  //     req.on("data", (chunk) => {
+  //       binary.push(...chunk);
+  //       console.log(chunk)
+  //     });
 
-      req.on("end", () => {
-        fs.writeFile(fpath, new Uint8Array(binary), (err) =>
-          err ? console.log(err) : undefined
-        );
-      });
-    } catch (error) {
-      res.writeHead(400);
-      res.end(error.toString());
-    }
-    return;
-  }
+  //     req.on("end", () => {
+  //       fs.writeFile(fpath, new Uint8Array(binary), (err) =>
+  //         err ? console.log(err) : undefined
+  //       );
+  //     });
+  //   } catch (error) {
+  //     res.writeHead(400);
+  //     res.end(error.toString());
+  //   }
+  //   return;
+  // }
   // return zip to web browser 
   if (_lower_url.startsWith("/api/download")) {
     try {

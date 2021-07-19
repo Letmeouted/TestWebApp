@@ -23,21 +23,42 @@
       var xhr = new XMLHttpRequest();
       if (!window.fileMeta || !window.uploadFile) {
         resp.innerHTML = "ERROR";
+        mdui.snackbar({message:resp.innerHTML})
         return;
       }
       xhr.open("POST", "/api/upload?filename=" + window.fileMeta.name + "&switch_status=" + switch_status + "&Encoding=" + Encoding, false);
       xhr.setRequestHeader("Content-Type", window.fileMeta.type);
       xhr.onreadystatechange = function () {
+        console.log("helloworld")
         if (xhr.readyState == 1 || xhr.readyState == 3) {
           resp.innerHTML = "Processing";
+          mdui.snackbar({message:resp.innerHTML,timeout:1000})
         } else if (xhr.readyState == 4) {
-          resp.innerHTML = "End: ";
-          if (xhr.status === 200) resp.innerHTML += "Success";
-          else if (500 <= xhr.status < 600) resp.innerHTML += "Server Error";
-          else if (400 <= xhr.status < 500) resp.innerHTML += "Client Error";
-          else if (300 <= xhr.status < 400) resp.innerHTML += "Redirect Status";
-          else if (100 <= xhr.status < 200) resp.innerHTML += "Informational Status";
-          else resp.innerHTML += "Invalid Error";
+          resp.innerHTML = "文件上传结果: ";
+          if (xhr.status === 200){
+            resp.innerHTML += "Success";
+            console.log(resp.innerHTML)
+          mdui.snackbar({message:resp.innerHTML,timeout:1000});
+          } 
+          else if (500 <= xhr.status < 600){
+            resp.innerHTML += "Server Error";
+            mdui.snackbar({message:resp.innerHTML,timeout:1000});
+          } 
+          else if (400 <= xhr.status < 500) {
+            resp.innerHTML += "Client Error";
+          mdui.snackbar({message:resp.innerHTML,timeout:1000});
+          }
+          else if (300 <= xhr.status < 400) {
+            resp.innerHTML += "Redirect Status";
+          mdui.snackbar({message:resp.innerHTML,timeout:1000});
+          }
+          else if (100 <= xhr.status < 200) {
+            resp.innerHTML += "Informational Status";
+          mdui.snackbar({message:resp.innerHTML,timeout:1000});
+          }
+          else 
+          resp.innerHTML += "Invalid Error";
+          mdui.snackbar({message:resp.innerHTML});
         }
       };
       document.getElementById("the-file").value = "";
@@ -59,8 +80,8 @@
         } else if (xhr.readyState == 4) {
           resp.innerHTML = "End: ";
           if (xhr.status === 200) resp.innerHTML += "Success";
-          else if (500 <= xhr.status < 600) resp.innerHTML += "Server Error";
-          else if (400 <= xhr.status < 500) resp.innerHTML += "Client Error";
+          else if (500 <= xhr.status < 600) resp.innerHTML += "Server error";
+          else if (400 <= xhr.status < 500) resp.innerHTML += "Client error";
           else if (300 <= xhr.status < 400) resp.innerHTML += "Redirect Status";
           else if (100 <= xhr.status < 200) resp.innerHTML += "Informational Status";
           else resp.innerHTML += "Invalid Error";
@@ -71,7 +92,7 @@
   </script>
 </head>
 
-<body onload="onload()" class="mdui-theme-primary-indigo mdui-bottom-nav-fixed">
+<body  class="mdui-theme-primary-indigo mdui-bottom-nav-fixed">
   <div class="mdui-tab mdui-tab-centered mdui-tab-full-width" mdui-tab>
     <a href="#tab1" class="mdui-ripple mdui-tab-active" onmousedown="mOver1(this)"><i id="tab1_icon"
         class="mdui-icon material-icons">&#xe24d;</i></a>
@@ -96,7 +117,7 @@
         <button id="uploadfile" onclick="sub()" class="uploadeal" style="display: none;">Upload and Process</button>
         <button onclick="deal()" style="display: none;">Deal</button>
       </div>
-      <p style="margin-left: 10px;" id="response"></p>
+      <p style="margin-left: 10px;display: none;" id="response" ></p>
     </div>
     <div class="mdui-valign mdui-hoverable mdui-shadow-1 mdui-m-a-2 mdui-color-theme mdui-img-rounded" style="height: 100px;">
       <p class="mdui-center">
@@ -130,10 +151,11 @@
       </form>
     </div>
   </div>
-  <div id="tab3" class="mdui-p-a-1">
+  <div id="tab3"  class="mdui-p-a-1">
     <div class="layout">
       <div class="mdui-col-xs-12 panel">运行时信息</div>
       <div id="restore" class="mdui-col-xs-12 result2">
+
       </div>
     </div>
   </div>
